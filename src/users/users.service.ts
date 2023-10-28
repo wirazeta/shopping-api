@@ -29,45 +29,54 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = this.prisma.users.findFirst({ 
-      where: { 
-        id: id, 
-        deletedAt: null 
-      } 
-    }).then((user) => { 
-      delete user.password; 
-      delete user.role; 
-      return user; 
+    const user = this.prisma.users.findFirst({
+      where: {
+        id: id,
+        deletedAt: null
+      }
+    }).then((user) => {
+      if (!user) {
+        return null;
+      }
+      delete user.password;
+      delete user.role;
+      return user;
     });
     return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.users.update({ 
-      where: { 
-        id: id 
-      }, 
-      data: updateUserDto 
-    }).then((user) => { 
-      delete user.password; 
-      delete user.role; 
-      return user; 
+    const user = await this.prisma.users.update({
+      where: {
+        id: id,
+      },
+      data: updateUserDto
+    }).then((user) => {
+      if (!user) {
+        return null;
+      }
+      delete user.password;
+      delete user.role;
+      return user;
     })
     return user;
   }
 
   async remove(id: number) {
-    const user = await this.prisma.users.update({ 
-      where: { 
-        id: id 
-      }, 
-      data: { 
-        deletedAt: new Date().toISOString() 
-      } 
-    }).then((user) => { 
-      delete user.password; 
-      delete user.role; 
-      return user; 
+    const user = await this.prisma.users.update({
+      where: {
+        id: id,
+      },
+      data: {
+        deletedAt: new Date().toISOString()
+      }
+    }).then((user) => {
+      if (!user) {
+        return null;
+      }
+      delete user.password;
+      delete user.role;
+      return user;
     });
     return user;
   }
