@@ -6,10 +6,61 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id
+model Users {
+  id          Int           @default(autoincrement()) @id
+  username    String        @unique
+  firstName   String
+  lastName    String  
+  phoneNumber String
+  email       String
+  password    String
+  role        String        @default("user")
+  image       String?
+  createdAt   DateTime      @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime?
+  items       Items[]
+  invoices    Invoices[]
+}
+
+model Items {
+  id            Int             @default(autoincrement()) @id
+  userId        Int
+  name          String
+  price         Int
+  qty           Int
+  image         String?
+  createdAt     DateTime        @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+  user          Users           @relation(fields: [userId], references: [id])
+  invoiceItems  InvoiceItems[]
+}
+
+model Invoices {
+  id            Int             @default(autoincrement()) @id
+  userId        Int
+  totalPrice    Int
+  createdAt     DateTime        @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+  user          Users           @relation(fields: [userId], references: [id])
+  invoiceItems  InvoiceItems[] 
+}
+
+model InvoiceItems {
+  id            Int       @default(autoincrement()) @id
+  invoiceId     Int
+  itemId        Int
+  qty           Int
+  subTotalPrice Int
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+  item          Items     @relation(fields: [itemId], references: [id])
+  invoice       Invoices  @relation(fields: [invoiceId], references: [id])
 }
