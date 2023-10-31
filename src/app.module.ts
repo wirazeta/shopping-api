@@ -7,9 +7,19 @@ import { InvoicesModule } from './invoices/invoices.module';
 import { InvoiceItemsModule } from './invoice-items/invoice-items.module';
 // import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule, ItemsModule, InvoicesModule, InvoiceItemsModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env'
+    }),
+    UsersModule, 
+    ItemsModule, 
+    InvoicesModule, 
+    InvoiceItemsModule, 
+    AuthModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
