@@ -1,6 +1,6 @@
-import { AuthGuardGuard } from './auth-guard.guard';
+import { AuthGuardGuard } from "./auth-guard.guard";
 
-describe('AuthGuardGuard', () => {
+describe('IsAdminGuard', () => {
   it('should be defined', () => {
     expect(new AuthGuardGuard()).toBeDefined();
   });
