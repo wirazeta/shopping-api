@@ -4,27 +4,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IsAdminGuard } from 'src/guard/is-admin/is-admin.guard';
 import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
+import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
-
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto, @Res() res) {
-    const result = await this.usersService.create(createUserDto);
-    if (result === null || result === undefined) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Register Failed',
-        status: HttpStatus.BAD_REQUEST,
-        data: {}
-      })
-    }
-    return res.status(HttpStatus.CREATED).json({
-      message: 'Register Success',
-      status: HttpStatus.CREATED,
-      data: result
-    })
-  }
 
   @UseGuards(AuthGuardGuard, IsAdminGuard)
   @Get()
@@ -44,6 +28,7 @@ export class UsersController {
     })
   }
 
+  @UseGuards(AuthGuardGuard, IsItemOwnerGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res) {
     const result = await this.usersService.findOne(+id);
@@ -61,6 +46,7 @@ export class UsersController {
     })
   }
 
+  @UseGuards(AuthGuardGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Res() res) {
     const result = await this.usersService.update(+id, updateUserDto);
@@ -78,10 +64,8 @@ export class UsersController {
     })
   }
 
-  // @UseGuards(AuthGuardGuard)
-  // @UseGuards(IsAdminGuard)
+  @UseGuards(AuthGuardGuard, IsAdminGuard)
   @Delete(':id')
-  // @UseGuard(IsAdminGuard)
   async remove(@Param('id') id: string, @Res() res) {
     const result = await this.usersService.remove(+id);
     if (result === null || result === undefined) {
