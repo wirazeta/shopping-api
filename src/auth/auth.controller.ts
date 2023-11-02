@@ -1,16 +1,27 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, FileTypeValidator, Get, HttpCode, HttpStatus, MaxFileSizeValidator, ParseFilePipe, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  
+  @UseInterceptors(FileInterceptor('image'))
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  async signUp(@Body() createUserDto: CreateUserDto, @Res() res){
-    const token = await this.authService.signUp(createUserDto);
+  async signUp(@Body() createUserDto: CreateUserDto, @UploadedFile(
+    new ParseFilePipe({
+      validators: [
+        new MaxFileSizeValidator({maxSize: 1024 * 1024 * 5}),
+        new FileTypeValidator({fileType: '.(png|jpeg|jpg)'}),
+      ]
+    })
+  ) file: Express.Multer.File, @Res() res){
+    console.log("Wira Disini");
+    const data = {...createUserDto, image: file.path};
+    const token = await this.authService.signUp(data);
     return res.status(HttpStatus.CREATED).json({
       message: 'success',
       status: HttpStatus.CREATED,

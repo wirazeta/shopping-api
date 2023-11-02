@@ -1,10 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IsAdminGuard } from 'src/guard/is-admin/is-admin.guard';
 import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
-import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
 
 @Controller('users')
 export class UsersController {
@@ -28,7 +26,7 @@ export class UsersController {
     })
   }
 
-  @UseGuards(AuthGuardGuard, IsItemOwnerGuard)
+  @UseGuards(AuthGuardGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res) {
     const result = await this.usersService.findOne(+id);

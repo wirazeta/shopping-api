@@ -10,8 +10,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class AuthService {
     constructor(private prisma: PrismaService, private jwt: JwtService){}
 
-    async signUp(createUserDto: CreateUserDto){
-        const user = await this.prisma.users.create({data: createUserDto});
+    async signUp(data: any){
+        const user = await this.prisma.users.create({data: data});
         const payload = {user: user.id};
         return this.jwt.signAsync(payload);
     }
