@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IsAdminGuard } from 'src/guard/is-admin/is-admin.guard';
 import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
+import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
 
 @Controller('users')
 export class UsersController {
