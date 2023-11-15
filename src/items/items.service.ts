@@ -8,8 +8,17 @@ export class ItemsService {
 
   constructor(private prisma: PrismaService){}
 
-  create(createItemDto: CreateItemDto) {
-    return 'This action adds a new item';
+  async create(data: any) {
+    const item = await this.prisma.items.create({
+      data:{
+        name: data.name,
+        price: data.price,
+        qty: data.qty,
+        image: data.image,
+        userId: data.userId
+      }
+    })
+    return item;
   }
 
   async findAll() {
@@ -30,8 +39,16 @@ export class ItemsService {
     return item;
   }
 
-  update(id: number, updateItemDto: UpdateItemDto) {
-    return `This action updates a #${id} item`;
+  async update(id: number, updateItemDto: UpdateItemDto) {
+    const item = await this.prisma.items.update({where:{id: id}, data: updateItemDto}).then((item) => {
+      if(item === null){
+        return null;
+      }
+      delete item.deletedAt;
+      delete item.createdAt;
+      delete item.updatedAt;
+    });
+    return item;
   }
 
   async remove(id: number) {

@@ -1,16 +1,14 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class IsItemOwnerGuard implements CanActivate {
-  constructor(private prisma: PrismaService){}
+export class IsOwnerGuard implements CanActivate {
   async canActivate(
     context: ExecutionContext,
-  ): Promise<boolean> {
+  ): Promise<boolean>{
     const ctx = context.switchToHttp().getRequest();
-    const item = await this.prisma.items.findFirst({where:{id: ctx['params'].id}});
-    if (item.userId !== ctx['user'].user){
+    console.log(ctx);
+    if(parseInt(ctx['params'].id) !== ctx['user'].user){
       throw new ForbiddenException
     }
     return true;

@@ -27,7 +27,7 @@ export class AuthController {
     const token = await this.authService.signUp(data);
     return res.status(HttpStatus.CREATED).json({
       message: 'success',
-      status: HttpStatus.CREATED,
+      statusCode: HttpStatus.CREATED,
       data: token
     });
   }
@@ -38,7 +38,7 @@ export class AuthController {
     const token = await this.authService.signIn(signInDto.username, signInDto.password);
     return res.status(HttpStatus.OK).json({
       message: 'success',
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: token
     });
   }

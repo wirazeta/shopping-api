@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { IsAdminGuard } from 'src/guard/is-admin/is-admin.guard';
 import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
 import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
+import { IsOwnerGuard } from 'src/guard/is-owner/is-owner.guard';
 
 @Controller('users')
 export class UsersController {
@@ -16,13 +17,13 @@ export class UsersController {
     if (result === null || result === undefined) {
       return res.status(HttpStatus.NOT_FOUND).json({
         message: 'No user registered',
-        status: HttpStatus.NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
         data: []
       });
     }
     return res.status(HttpStatus.OK).json({
       message: 'All User Found',
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: result
     })
   }
@@ -34,31 +35,31 @@ export class UsersController {
     if (result === null || result === undefined) {
       return res.status(HttpStatus.NOT_FOUND).json({
         message: 'User not found',
-        status: HttpStatus.NOT_FOUND,
+        statusCode: HttpStatus.NOT_FOUND,
         data: result
       });
     }
     return res.status(HttpStatus.OK).json({
       message: 'User Found',
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: result
     })
   }
 
-  @UseGuards(AuthGuardGuard)
+  @UseGuards(AuthGuardGuard, IsOwnerGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Res() res) {
     const result = await this.usersService.update(+id, updateUserDto);
     if (result === null || result === undefined) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Update Failed',
-        status: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.BAD_REQUEST,
         data: result
       });
     }
     return res.status(HttpStatus.OK).json({
       message: 'Update Success',
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: result
     })
   }
@@ -70,13 +71,13 @@ export class UsersController {
     if (result === null || result === undefined) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Delete Failed',
-        status: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.BAD_REQUEST,
         data: result
       });
     }
     return res.status(HttpStatus.OK).json({
       message: 'Delete Success',
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: result
     })
   }
