@@ -5,6 +5,7 @@ import { UpdateItemDto } from './dto/update-item.dto';
 import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { IsOwnerGuard } from 'src/guard/is-owner/is-owner.guard';
+import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
 
 @Controller('items')
 export class ItemsController {
@@ -74,7 +75,7 @@ export class ItemsController {
     });
   }
 
-  @UseGuards(AuthGuardGuard, IsOwnerGuard)
+  @UseGuards(AuthGuardGuard, IsItemOwnerGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto, @Response() res) {
     const result = await this.itemsService.update(+id, updateItemDto);
@@ -88,7 +89,7 @@ export class ItemsController {
       message: "Update item success",
       statusCode: HttpStatus.OK,
       data: result
-    })
+    });
   }
 
   @UseGuards(AuthGuardGuard, IsOwnerGuard)

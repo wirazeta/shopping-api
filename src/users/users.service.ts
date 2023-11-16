@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
@@ -9,16 +9,16 @@ export class UsersService {
   constructor(private prisma: PrismaService) { }
 
   async findAll() {
-    const user = (await this.prisma.users.findMany({
+    const users = (await this.prisma.users.findMany({
       where: {
         deletedAt: null
       }
-    })).map((user) => {
+    }))?.map((user) => {
       delete user.role;
       delete user.password;
       return user;
     });
-    return user;
+    return users;
   }
 
   async findOne(id: number) {

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ItemsService {
@@ -47,6 +47,7 @@ export class ItemsService {
       delete item.deletedAt;
       delete item.createdAt;
       delete item.updatedAt;
+      return item;
     });
     return item;
   }
@@ -56,6 +57,7 @@ export class ItemsService {
       if(!item){
         return null
       }
+      return item;
     });
     return item;
   }

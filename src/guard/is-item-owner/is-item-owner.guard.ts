@@ -9,7 +9,7 @@ export class IsItemOwnerGuard implements CanActivate {
     context: ExecutionContext,
   ): Promise<boolean> {
     const ctx = context.switchToHttp().getRequest();
-    const item = await this.prisma.items.findFirst({where:{id: ctx['params'].id}});
+    const item = await this.prisma.items.findFirst({where:{id: parseInt(ctx['params'].id)}});
     if (item.userId !== ctx['user'].user){
       throw new ForbiddenException
     }
