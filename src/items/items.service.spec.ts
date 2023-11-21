@@ -24,7 +24,7 @@ describe('ItemsService', () => {
         deletedAt: null,
         updatedAt: null,
       }
-      const result = await prismaMock.items.create.mockResolvedValue(item);
+      const result = prismaMock.items.create.mockResolvedValue(item);
       expect(await service.create(item)).toMatchObject({
         createdAt: null,
         deletedAt: null,

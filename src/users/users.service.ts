@@ -9,11 +9,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) { }
 
   async findAll() {
-    const users = (await this.prisma.users.findMany({
-      where: {
-        deletedAt: null
-      }
-    }))?.map((user) => {
+    const users = (await this.prisma.users.findMany({where:{deletedAt: null}}))?.map((user) => {
       delete user.role;
       delete user.password;
       return user;
@@ -22,13 +18,13 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = this.prisma.users.findFirst({
+    const user = await this.prisma.users.findFirst({
       where: {
         id: id,
         deletedAt: null
       }
     }).then((user) => {
-      if (!user) {
+      if (!user || user.deletedAt !== null) {
         return null;
       }
       delete user.password;
@@ -43,7 +39,7 @@ export class UsersService {
       where: {
         id: id,
       },
-      data: updateUserDto
+      data: {...updateUserDto, updatedAt: new Date().toISOString()}
     }).then((user) => {
       if (!user) {
         return null;
@@ -51,7 +47,8 @@ export class UsersService {
       delete user.password;
       delete user.role;
       return user;
-    })
+    });
+    // console.log(user);
     return user;
   }
 
