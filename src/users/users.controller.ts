@@ -71,14 +71,12 @@ export class UsersController {
     if (result === null || result === undefined) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Delete Failed',
-        statusCode: HttpStatus.BAD_REQUEST,
-        data: result
+        statusCode: HttpStatus.BAD_REQUEST
       });
     }
     return res.status(HttpStatus.OK).json({
       message: 'Delete Success',
-      statusCode: HttpStatus.OK,
-      data: result
+      statusCode: HttpStatus.OK
     })
   }
 }

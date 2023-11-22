@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) { }
 
   async findAll() {
-    const users = (await this.prisma.users.findMany({where:{deletedAt: null}}))?.map((user) => {
+    const users = (await this.prisma.users.findMany({ where: { deletedAt: null } }))?.map((user) => {
       delete user.role;
       delete user.password;
       return user;
@@ -39,7 +39,7 @@ export class UsersService {
       where: {
         id: id,
       },
-      data: {...updateUserDto, updatedAt: new Date().toISOString()}
+      data: { ...updateUserDto, updatedAt: new Date().toISOString() }
     }).then((user) => {
       if (!user) {
         return null;
@@ -57,9 +57,7 @@ export class UsersService {
       where: {
         id: id,
       },
-      data: {
-        deletedAt: new Date().toISOString()
-      }
+      data: { deletedAt: new Date().toISOString() }
     }).then((user) => {
       if (!user) {
         return null;

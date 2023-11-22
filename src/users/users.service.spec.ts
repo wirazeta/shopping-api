@@ -36,22 +36,21 @@ describe('UsersService', () => {
       ]);
     });
     it('should return array of users and not include deleted user', async () => {
-      const mockImplementationFunction = jest.fn().mockImplementation(async () => {
+      const mockImplementationFunction = jest.fn().mockImplementation(async (args) => {
+        const { where } = args || {};
         return [
           { id: 1, username: "wira", firstName: "wira", lastName: "", phoneNumber: "1234567890", email: "wira@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
           { id: 2, username: "wira1", firstName: "wira1", lastName: "", phoneNumber: "1234567890", email: "wira1@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
           { id: 3, username: "wira2", firstName: "wira2", lastName: "", phoneNumber: "1234567890", email: "wira@2gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: new Date("2023-11-21T07:05:09.416Z").toISOString(), updatedAt: null },
-        ]
+        ].filter((user) => user.deletedAt === where.deletedAt);
       })
-      prismaMock.users.findMany.mockImplementation(mockImplementationFunction);
+      prismaMock.users.findMany.mockImplementation(mockImplementationFunction)
       const users = await service.findAll();
-      console.log(users);
-      // console.log(users.some(user => user.id === 2));
-      // expect(users.some(user => user.id === 3)).toBe(false);
-      // expect(users.filter((user) => user.deletedAt === null)).toEqual([
-      //   { id: 1, username: "wira", firstName: "wira", lastName: "", email: "wira@gmail.com", phoneNumber: "1234567890", createdAt: null, deletedAt: null, updatedAt: null, image: null },
-      //   { id: 3, username: "wira2", firstName: "wira2", lastName: "", email: "wira@2gmail.com", phoneNumber: "1234567890", createdAt: null, deletedAt: null, updatedAt: null, image: null },
-      // ]);
+      expect(users.some(user => user.id === 3)).toBe(false);
+      expect(users).toEqual([
+        { id: 1, username: "wira", firstName: "wira", lastName: "", phoneNumber: "1234567890", email: "wira@gmail.com", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
+        { id: 2, username: "wira1", firstName: "wira1", lastName: "", phoneNumber: "1234567890", email: "wira1@gmail.com", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
+      ]);
     });
     it('should return empty array', async () => {
       prismaMock.users.findMany.mockResolvedValue([]);
@@ -78,10 +77,35 @@ describe('UsersService', () => {
       expect(user).toEqual({ id: 1, username: "wira", firstName: "wira1", lastName: "", email: "wira@gmail.com", phoneNumber: "1234567890", createdAt: null, deletedAt: null, updatedAt: new Date("2023-11-21T07:05:09.415Z"), image: null });
     });
     it('should return an error', async () => {
-      prismaMock.users.update.mockResolvedValue({ id: 1, username: "wira", firstName: "wira1", lastName: "", email: "wira@gmail.com", password: "123456", phoneNumber: "1234567890", createdAt: null, deletedAt: null, updatedAt: new Date("2023-11-21T07:05:09.415Z"), role: "user", image: null });
+      const mockImplementationFunction = jest.fn().mockImplementation(async (args) => {
+        const { where } = args || {};
+        if (where.id !== 1) {
+          return null;
+        }
+        return { id: 1, username: "wira", firstName: "wira1", lastName: "", email: "wira@gmail.com", password: "123456", phoneNumber: "1234567890", createdAt: null, deletedAt: null, updatedAt: new Date("2023-11-21T07:05:09.415Z"), role: "user", image: null }
+      })
+      prismaMock.users.update.mockImplementation(mockImplementationFunction);
       const user = await service.update(2, { firstName: "wira1" });
-      console.log(user);
+      expect(user).toBeNull();
+    });
+  });
+  describe("DeleteUser", () => {
+    const mockImplementationFunction = jest.fn().mockImplementation(async (args) => {
+      const { where } = args || {};
+      if (where.id !== 1) {
+        return null;
+      }
+      return { id: 1, username: "wira", firstName: "wira", lastName: "", phoneNumber: "1234567890", email: "wira@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: new Date("2023-11-21T07:05:09.416Z").toISOString(), updatedAt: null }
+    });
+    it('should return a deleted user', async () => {
+      prismaMock.users.update.mockImplementation(mockImplementationFunction)
+      const user = await service.remove(1);
+      expect(user).toEqual({ id: 1, username: "wira", firstName: "wira", lastName: "", phoneNumber: "1234567890", email: "wira@gmail.com", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: new Date("2023-11-21T07:05:09.416Z").toISOString(), updatedAt: null });
+    });
+    it('should return null', async () => {
+      prismaMock.users.update.mockImplementation(mockImplementationFunction)
+      const user = await service.remove(2);
+      expect(user).toBeNull();
     })
-  })
-
+  });
 });
