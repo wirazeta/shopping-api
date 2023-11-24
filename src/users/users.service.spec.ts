@@ -38,12 +38,18 @@ describe('UsersService', () => {
     it('should return array of users and not include deleted user', async () => {
       const mockImplementationFunction = jest.fn().mockImplementation(async (args) => {
         const { where } = args || {};
+        if(where.deletedAt === null){
+          return [
+            { id: 1, username: "wira", firstName: "wira", lastName: "", phoneNumber: "1234567890", email: "wira@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
+            { id: 2, username: "wira1", firstName: "wira1", lastName: "", phoneNumber: "1234567890", email: "wira1@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
+          ]  
+        }
         return [
           { id: 1, username: "wira", firstName: "wira", lastName: "", phoneNumber: "1234567890", email: "wira@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
           { id: 2, username: "wira1", firstName: "wira1", lastName: "", phoneNumber: "1234567890", email: "wira1@gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: null, updatedAt: null },
           { id: 3, username: "wira2", firstName: "wira2", lastName: "", phoneNumber: "1234567890", email: "wira@2gmail.com", password: "123456", role: "user", image: "", createdAt: new Date("2023-11-21T07:05:09.415Z"), deletedAt: new Date("2023-11-21T07:05:09.416Z").toISOString(), updatedAt: null },
-        ].filter((user) => user.deletedAt === where.deletedAt);
-      })
+        ]
+      });
       prismaMock.users.findMany.mockImplementation(mockImplementationFunction)
       const users = await service.findAll();
       expect(users.some(user => user.id === 3)).toBe(false);
@@ -106,6 +112,6 @@ describe('UsersService', () => {
       prismaMock.users.update.mockImplementation(mockImplementationFunction)
       const user = await service.remove(2);
       expect(user).toBeNull();
-    })
+    });
   });
 });

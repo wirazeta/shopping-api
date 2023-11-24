@@ -35,7 +35,8 @@ export class ItemsService {
       if(!item){
         return null
       }
-    })
+      return item;
+    });
     return item;
   }
 
@@ -44,9 +45,6 @@ export class ItemsService {
       if(item === null){
         return null;
       }
-      delete item.deletedAt;
-      delete item.createdAt;
-      delete item.updatedAt;
       return item;
     });
     return item;

@@ -1,9 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
 
@@ -23,6 +20,9 @@ export class AuthService {
                 image: data.image
             }
         })
+        if(!user){
+            return null;
+        }
         const payload = { user: user.id };
         return this.jwt.signAsync(payload);
     }
