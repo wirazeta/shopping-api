@@ -8,6 +8,7 @@ import { InvoiceItemsModule } from './invoice-items/invoice-items.module';
 // import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -18,7 +19,11 @@ import { ConfigModule } from '@nestjs/config';
     ItemsModule, 
     InvoicesModule, 
     InvoiceItemsModule, 
-    AuthModule
+    AuthModule,
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

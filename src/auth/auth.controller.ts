@@ -25,6 +25,13 @@ export class AuthController {
       data = { ...createUserDto, image: file.path }
     }
     const token = await this.authService.signUp(data);
+    if(token === null){
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'failed',
+        statusCode: HttpStatus.BAD_REQUEST,
+        data: 'Username already registered'
+      })
+    }
     return res.status(HttpStatus.CREATED).json({
       message: 'success',
       statusCode: HttpStatus.CREATED,
