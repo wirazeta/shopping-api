@@ -6,21 +6,23 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let jwtServiceMock: jest.Mocked<JwtService>;
+  // let jwtModuleMock: jest.Mocked<JwtModule>;
 
   beforeEach(async () => {
-    const secretKey = process.env.JWT_SECRET;
+    jwtServiceMock = new JwtService() as jest.Mocked<JwtService>;
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, PrismaService, JwtService], 
-      imports: [
-        JwtModule.register({
-          secret: secretKey || 'defaultSecretKey'
-        })
-      ]
+      providers: [AuthService, PrismaService, {
+        provide: JwtService,
+        useValue: jwtServiceMock
+      }],
     }).overrideProvider(PrismaService).useValue(prismaMock).compile();
     service = module.get<AuthService>(AuthService);
+
   });
   describe('SignUpUser', () => {
     it('should return token', async () => {
+      const mockedToken = 'mockedToken';
       const mockImplementationFunction = jest.fn().mockImplementation(async () => {
         return {
           id: 1,
@@ -37,6 +39,7 @@ describe('AuthService', () => {
         }
       });
       prismaMock.users.create.mockImplementation(mockImplementationFunction);
+      jest.spyOn(jwtServiceMock, 'signAsync').mockResolvedValue(mockedToken);
       const register = await service.signUp({
         id: 1,
         username: "wira",
@@ -50,7 +53,8 @@ describe('AuthService', () => {
         deletedAt: null,
         updatedAt: null
       });
-      expect(register.length).toBeGreaterThanOrEqual('hello'.length);
+      expect(register).toBe('mockedToken');
+      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({user: 1});
     });
     it('should return null', async () => {
       const mockImplementationFunction = jest.fn().mockImplementation(async () => {
@@ -68,7 +72,6 @@ describe('AuthService', () => {
           updatedAt: null
         }
       });
-
       prismaMock.users.findFirst.mockImplementation(mockImplementationFunction);
       prismaMock.users.create.mockImplementation(mockImplementationFunction);
       const register = await service.signUp({
