@@ -1,4 +1,4 @@
-import { Body, Controller, FileTypeValidator, Get, HttpCode, HttpStatus, MaxFileSizeValidator, ParseFilePipe, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, FileTypeValidator, ForbiddenException, Get, HttpCode, HttpStatus, MaxFileSizeValidator, ParseFilePipe, Post, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -43,6 +43,9 @@ export class AuthController {
   @Post('login')
   async signIn(@Body() signInDto: Record<string, any>, @Res() res) {
     const token = await this.authService.signIn(signInDto.username, signInDto.password);
+    if(token === null){
+      throw new ForbiddenException;
+    }
     return res.status(HttpStatus.OK).json({
       message: 'success',
       statusCode: HttpStatus.OK,

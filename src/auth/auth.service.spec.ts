@@ -3,11 +3,11 @@ import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { prismaMock } from '../../singleton';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ForbiddenException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
   let jwtServiceMock: jest.Mocked<JwtService>;
-  // let jwtModuleMock: jest.Mocked<JwtModule>;
 
   beforeEach(async () => {
     jwtServiceMock = new JwtService() as jest.Mocked<JwtService>;
@@ -54,7 +54,7 @@ describe('AuthService', () => {
         updatedAt: null
       });
       expect(register).toBe('mockedToken');
-      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({user: 1});
+      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({ user: 1 });
     });
     it('should return null', async () => {
       const mockImplementationFunction = jest.fn().mockImplementation(async () => {
@@ -94,17 +94,35 @@ describe('AuthService', () => {
     it('should return token', async () => {
       const mockImplementationFunction = jest.fn().mockImplementation(async (args) => {
         const { where } = args || {};
-        if(where && where.username === "wira"){
+        if (where && where.username === "wira") {
           return {
             id: 1,
             password: "$2a$10$T4o8EbnJwW.C6LFElprKaOL4BtpsUGf42fWla4AYxFd50ncDoasby",
-          }  
+          }
         }
         return null;
       });
+      jest.spyOn(jwtServiceMock, 'signAsync').mockResolvedValue('mockedToken');
       prismaMock.users.findFirst.mockImplementation(mockImplementationFunction);
       const login = await service.signIn('wira', '123456');
-      expect(login.length).toBeGreaterThanOrEqual('hello'.length);
+      expect(login).toBe('mockedToken');
+      expect(jwtServiceMock.signAsync).toHaveBeenCalledWith({ user: 1 });
     });
+    it('should return null', async () => {
+      const mockImplementationFunction = jest.fn().mockImplementation(async (args) => {
+        const { where } = args || {};
+        if (where && where.username === "wira") {
+          return {
+            id: 1,
+            password: "$2a$10$T4o8EbnJwW.C6LFElprKaOL4BtpsUGf42fWla4AYxFd50ncDoasby",
+          }
+        }
+        return null;
+      });
+      jest.spyOn(jwtServiceMock, 'signAsync').mockResolvedValue('mockedToken');
+      prismaMock.users.findFirst.mockImplementation(mockImplementationFunction);
+      const login = await service.signIn('wira', '456');
+      expect(login).toBe(null);
+    })
   });
 });
