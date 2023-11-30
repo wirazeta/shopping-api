@@ -21,7 +21,7 @@ export class AuthController {
     })
   ) file: Express.Multer.File, @Res() res) {
     let data = { ...createUserDto, image: null };
-    if (file !== undefined || file !== null) {
+    if (file != undefined || file != null) {
       console.log(file);
       data = { ...createUserDto, image: file.path }
     }
@@ -39,7 +39,6 @@ export class AuthController {
       data: token
     });
   }
-
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async signIn(@Body() signInDto: Record<string, any>, @Res() res) {
@@ -52,5 +51,5 @@ export class AuthController {
       statusCode: HttpStatus.OK,
       data: token
     });
-  }
+  };
 }
