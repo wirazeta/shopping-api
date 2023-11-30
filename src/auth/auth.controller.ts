@@ -21,7 +21,8 @@ export class AuthController {
     })
   ) file: Express.Multer.File, @Res() res) {
     let data = { ...createUserDto, image: null };
-    if (file !== undefined) {
+    if (file !== undefined || file !== null) {
+      console.log(file);
       data = { ...createUserDto, image: file.path }
     }
     const token = await this.authService.signUp(data);
