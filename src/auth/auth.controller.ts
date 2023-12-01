@@ -22,7 +22,6 @@ export class AuthController {
   ) file: Express.Multer.File, @Res() res) {
     let data = { ...createUserDto, image: null };
     if (file != undefined || file != null) {
-      console.log(file);
       data = { ...createUserDto, image: file.path }
     }
     const token = await this.authService.signUp(data);
@@ -44,7 +43,10 @@ export class AuthController {
   async signIn(@Body() signInDto: Record<string, any>, @Res() res) {
     const token = await this.authService.signIn(signInDto.username, signInDto.password);
     if(token === null){
-      throw new ForbiddenException;
+      return res.status(HttpStatus.FORBIDDEN).json({
+        message: 'failed',
+        statusCode: HttpStatus.FORBIDDEN
+      })
     }
     return res.status(HttpStatus.OK).json({
       message: 'success',
