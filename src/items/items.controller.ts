@@ -2,10 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, UseGuards, 
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
+import { AuthGuardGuard } from '../guard/auth-guard/auth-guard.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { IsOwnerGuard } from 'src/guard/is-owner/is-owner.guard';
-import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
+import { IsOwnerGuard } from '../guard/is-owner/is-owner.guard';
+import { IsItemOwnerGuard } from '../guard/is-item-owner/is-item-owner.guard';
 
 @Controller('items')
 export class ItemsController {
@@ -24,7 +24,7 @@ export class ItemsController {
     })
   ) file: Express.Multer.File, @Response() res) {
     let data = { ...createItemDto, userId: req.user.user, image: null };
-    if (file !== undefined) {
+    if (file != undefined || file != null) {
       data = { ...createItemDto, image: file.path, userId: req.user.user }
     }
     const result = await this.itemsService.create(data);

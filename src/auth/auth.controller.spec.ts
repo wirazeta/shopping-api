@@ -5,7 +5,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { prismaMock } from '../../singleton';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HttpStatus, INestApplication, Res } from '@nestjs/common';
-import * as request from 'supertest';
 import { JwtService } from '@nestjs/jwt';
 import { Readable } from 'stream';
 import { Response } from 'express';
