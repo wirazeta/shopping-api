@@ -42,7 +42,7 @@ export class ItemsService {
 
   async update(id: number, updateItemDto: UpdateItemDto) {
     const item = await this.prisma.items.update({where:{id: id}, data: updateItemDto}).then((item) => {
-      if(item === null){
+      if(!item){
         return null;
       }
       return item;

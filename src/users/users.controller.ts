@@ -1,10 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { IsAdminGuard } from 'src/guard/is-admin/is-admin.guard';
-import { AuthGuardGuard } from 'src/guard/auth-guard/auth-guard.guard';
-import { IsItemOwnerGuard } from 'src/guard/is-item-owner/is-item-owner.guard';
-import { IsOwnerGuard } from 'src/guard/is-owner/is-owner.guard';
+import { IsAdminGuard } from '../guard/is-admin/is-admin.guard';
+import { AuthGuardGuard } from '../guard/auth-guard/auth-guard.guard';
+import { IsOwnerGuard } from '../guard/is-owner/is-owner.guard';
 
 @Controller('users')
 export class UsersController {

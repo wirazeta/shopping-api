@@ -15,6 +15,17 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  describe("Items", () => {
+    it('/GET items', async () => {
+      return request(app.getHttpServer())
+      .get('/items')
+      .expect(200)
+      .expect({
+        
+      })
+    })
+  })
+
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')

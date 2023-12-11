@@ -188,4 +188,86 @@ describe('ItemsController', () => {
       });
     });
   });
+  describe("UpdateItems", () => {
+    it("should return an item update", async () => {
+      const result = {
+        id: 1,
+        name: "tas",
+        qty: 10,
+        price: 40000,
+        image: 'path/to/file',
+        userId: 1,
+        createdAt: null,
+        deletedAt: null,
+        updatedAt: null,
+      }
+      jest.spyOn(service, "update").mockResolvedValue(result);
+      const res:Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      await controller.update("1",{price: 40000}, res);
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Update item success",
+        statusCode: HttpStatus.OK,
+        data: result
+      });
+    });
+    it("should return bad request", async () => {
+      const result = null;
+      jest.spyOn(service, 'update').mockResolvedValue(result);
+      const res:Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      await controller.update("1",{qty: 10}, res);
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Update item failed",
+        statusCode: HttpStatus.BAD_REQUEST
+      });
+    });
+  });
+  describe("DeleteItem", () => {
+    it("should return deleted item", async () => {
+      const result = {
+        id: 1,
+        name: "tas",
+        qty: 10,
+        price: 40000,
+        image: 'path/to/file',
+        userId: 1,
+        createdAt: null,
+        deletedAt: new Date("2023-11-21T07:05:09.415Z"),
+        updatedAt: null,
+      }
+      jest.spyOn(service, "remove").mockResolvedValue(result);
+      const res:Partial<Response> ={
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      await controller.remove("1", res);
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Delete item success",
+        statusCode: HttpStatus.OK,
+        data: result
+      });
+    });
+    it("should return bad request", async () => {
+      const result = null;
+      jest.spyOn(service, "remove").mockResolvedValue(result);
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      }
+      await controller.remove("1", res);
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Delete item failed",
+        statusCode: HttpStatus.BAD_REQUEST
+      })
+    })
+  });
 });
