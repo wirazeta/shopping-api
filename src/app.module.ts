@@ -9,6 +9,7 @@ import { InvoiceItemsModule } from './invoice-items/invoice-items.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET
-    })
+    }),
+    PaymentModule
   ],
   controllers: [AppController],
   providers: [AppService],

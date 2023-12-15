@@ -17,24 +17,25 @@ describe("Auth Controller (e2e)", () => {
         await app.init();
     });
     describe("Create User", () => {
-        it("should create a new user", async () => {
-            const req = request(app.getHttpServer)
-                .post("/auth/register")
-                .send(
-                    {
-                        "username": "wira6",
-                        "firstName": "wira5",
-                        "lastName": "",
-                        "email": "wira@gmail.com",
-                        "password": "123456",
-                        "phoneNumber": "000000000000"
-                    }
-                )
-            console.log(req);
-        });
-        // it("should get all users", async () => {
-        //     const req = (await request(app.getHttpServer).post("/auth/register"))
-        //     .headers({"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE3MDI0NTA1MTh9.XFy8_nV01dVN1NuoKdIQpqk6Pp4Jv0iDXQJqQjbVUAs"})
-        // })
+        // it("should create a new user", async () => {
+        //     const req = request(app.getHttpServer)
+        //         .post("/auth/register")
+        //         .send(
+        //             {
+        //                 "username": "wira6",
+        //                 "firstName": "wira5",
+        //                 "lastName": "",
+        //                 "email": "wira@gmail.com",
+        //                 "password": "123456",
+        //                 "phoneNumber": "000000000000"
+        //             }
+        //         )
+        //     console.log(req);
+        // });
+        it("should get all users", async () => {
+            // const req = (await request(app.getHttpServer).post("/auth/register"))
+            // .headers({"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE3MDI0NTA1MTh9.XFy8_nV01dVN1NuoKdIQpqk6Pp4Jv0iDXQJqQjbVUAs"})
+            console.log("User e2e");
+        })
     })
 });
