@@ -1,28 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
-import Midtrans from 'midtrans-client';
+// const midtrans = require('./midtrans-nodejs-client-master/index.js');
 import { PrismaService } from '@prisma/prisma.service';
+import { MidtransClient } from 'midtrans-node-client';
 
 
 @Injectable()
 export class PaymentService {
   constructor(prisma: PrismaService){}
-  create(data: any) {
+  async create(data: any) {
+    console.log(data);
+    const items = data.items.map((item) => {
+      const fixValue =  {...item, "quantity": item.qty};
+      delete item.qty;
+      return fixValue;
+    })
     const parameter = {
-      item_details: data.items,
+      item_details: items,
       transaction_details: {
-        order_id: data.order_id
+        order_id: data.id,
+        gross_amount: data.totalPrice
       }
     }
-    const snap = new Midtrans.Snap({
+    // const snap = new Midtrans.Snap({
+    //   isProduction: false,
+    //   serverKey: process.env.PUBLIC_API,
+    //   clientKey: process.env.PUBLIC_CLIENT
+    // });
+    const core = new MidtransClient.Snap({
       isProduction: false,
       serverKey: process.env.PUBLIC_API,
       clientKey: process.env.PUBLIC_CLIENT
-    });
-
+    })
+    const token = await core.createTransactionToken(parameter);
+    console.log(token);
     // return 'This action adds a new payment';
-    // return '';
+    return token;
   }
 
   findAll() {
